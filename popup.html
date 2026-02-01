@@ -77,31 +77,43 @@
             </div>
         </div>
 
-        <!-- Container de resultados WiFi -->
+        <!-- Bloco de Notas Local -->
+        <div id="notepad-container" class="notepad-section">
+            <div class="notepad-header">
+                <h2>📝 Anotações</h2>
+                <button id="clear-notes-btn" class="btn-icon-small" title="Limpar">🗑️</button>
+            </div>
+
+            <!-- Área de texto para anotações -->
+            <textarea id="notes-area" placeholder="Digite suas anotações aqui...
+"></textarea>
+
+            <!-- Botões de ação -->
+            <div class="notepad-actions">
+                <button id="save-notes-btn" class="btn-secondary">
+                    <span>💾</span>
+                    <span>Salvar</span>
+                </button>
+                <button id="add-wifi-btn" class="btn-secondary" title="Adicionar WiFi capturado">
+                    <span>📶</span>
+                    <span>+ WiFi</span>
+                </button>
+            </div>
+
+            <!-- Status de salvamento -->
+            <div id="save-status" class="save-status hidden">✅ Salvo!</div>
+        </div>
+
+        <!-- Container de resultados WiFi (captura) -->
         <div id="results-container" class="results hidden">
-            <h2>WiFi</h2>
-
-            <div class="credential-item">
-                <label>Nome da Rede (SSID)</label>
-                <div class="value-box">
+            <h3>📶 WiFi Capturado</h3>
+            <div class="captured-wifi">
+                <div class="wifi-info">
                     <span id="ssid-value">-</span>
-                    <button class="copy-btn" data-target="ssid-value" title="Copiar">📋</button>
-                </div>
-            </div>
-
-            <div class="credential-item">
-                <label>Senha WiFi</label>
-                <div class="value-box">
                     <span id="password-value">-</span>
-                    <button class="copy-btn" data-target="password-value" title="Copiar">📋</button>
                 </div>
+                <button id="add-to-notes-btn" class="btn-small">Adicionar às notas</button>
             </div>
-
-            <!-- Botão para salvar como TXT -->
-            <button id="save-txt-btn" class="btn-secondary">
-                <span>📝</span>
-                <span>Salvar</span>
-            </button>
         </div>
 
         <!-- Mensagem de erro -->

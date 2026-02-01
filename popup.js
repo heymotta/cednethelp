@@ -1,12 +1,11 @@
 /**
- * CedNet Help - Popup Script v1.8
- * Captura credenciais WiFi e Login Automático
+ * CedNet Help - Popup Script v2.0
+ * Captura credenciais WiFi, Login Automático e Bloco de Notas
  */
 
 // Elementos do DOM
 let captureBtn, resultsContainer, errorContainer, pageStatus;
 let ssidValue, passwordValue;
-let saveTxtBtn;
 let autoLoginBtn, loginStatus, loginResult;
 let deviceTypeSelect;
 
@@ -59,7 +58,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     pageStatus = document.getElementById('page-status');
     ssidValue = document.getElementById('ssid-value');
     passwordValue = document.getElementById('password-value');
-    saveTxtBtn = document.getElementById('save-txt-btn');
 
     // Elementos de login automático
     autoLoginBtn = document.getElementById('auto-login-btn');
@@ -69,6 +67,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Verificar página atual
     await checkCurrentPage();
+
+    // Carregar notas salvas
+    await loadNotes();
 
     // Configurar event listeners
     setupEventListeners();
@@ -136,9 +137,123 @@ function setupEventListeners() {
         btn.addEventListener('click', handleCopy);
     });
 
-    if (saveTxtBtn) {
-        saveTxtBtn.addEventListener('click', handleSaveTxt);
+    // Event listeners do Bloco de Notas
+    const saveNotesBtn = document.getElementById('save-notes-btn');
+    const clearNotesBtn = document.getElementById('clear-notes-btn');
+    const addWifiBtn = document.getElementById('add-wifi-btn');
+    const addToNotesBtn = document.getElementById('add-to-notes-btn');
+    const notesArea = document.getElementById('notes-area');
+
+    if (saveNotesBtn) {
+        saveNotesBtn.addEventListener('click', saveNotes);
     }
+
+    if (clearNotesBtn) {
+        clearNotesBtn.addEventListener('click', clearNotes);
+    }
+
+    if (addWifiBtn) {
+        addWifiBtn.addEventListener('click', handleCapture);
+    }
+
+    if (addToNotesBtn) {
+        addToNotesBtn.addEventListener('click', addCapturedWifiToNotes);
+    }
+
+    // AUTO-SAVE: Salva automaticamente quando digita (com debounce)
+    if (notesArea) {
+        let saveTimeout;
+        notesArea.addEventListener('input', () => {
+            clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(() => {
+                saveNotes(true); // true = silent (sem mostrar feedback)
+            }, 500); // Salva 500ms após parar de digitar
+        });
+
+        // Também salva ao perder foco
+        notesArea.addEventListener('blur', () => {
+            saveNotes(true);
+        });
+    }
+}
+
+// ========================================
+// FUNÇÕES DO BLOCO DE NOTAS
+// ========================================
+
+/**
+ * Carrega notas salvas do storage
+ */
+async function loadNotes() {
+    try {
+        const result = await chrome.storage.local.get(['cednetNotes']);
+        const notesArea = document.getElementById('notes-area');
+        if (result.cednetNotes && notesArea) {
+            notesArea.value = result.cednetNotes;
+        }
+    } catch (e) {
+        console.log('[CedNet Help] Erro ao carregar notas:', e);
+    }
+}
+
+/**
+ * Salva notas no storage local
+ * @param {boolean} silent - Se true, não mostra feedback visual
+ */
+async function saveNotes(silent = false) {
+    const notesArea = document.getElementById('notes-area');
+    const saveStatus = document.getElementById('save-status');
+
+    if (!notesArea) return;
+
+    try {
+        await chrome.storage.local.set({ cednetNotes: notesArea.value });
+
+        // Mostrar feedback (apenas se não for silent)
+        if (!silent && saveStatus) {
+            saveStatus.classList.remove('hidden');
+            setTimeout(() => {
+                saveStatus.classList.add('hidden');
+            }, 2000);
+        }
+
+        console.log('[CedNet Help] Notas salvas!');
+    } catch (e) {
+        console.log('[CedNet Help] Erro ao salvar notas:', e);
+    }
+}
+
+/**
+ * Limpa as notas
+ */
+async function clearNotes() {
+    const notesArea = document.getElementById('notes-area');
+    if (!notesArea) return;
+
+    if (confirm('Limpar todas as anotações?')) {
+        notesArea.value = '';
+        await saveNotes();
+    }
+}
+
+/**
+ * Adiciona WiFi capturado às notas
+ */
+function addCapturedWifiToNotes() {
+    const notesArea = document.getElementById('notes-area');
+    const ssid = ssidValue?.textContent || '-';
+    const pass = passwordValue?.textContent || '-';
+
+    if (!notesArea || ssid === '-') return;
+
+    const wifiEntry = `${ssid}\n${pass}\n`;
+    notesArea.value += wifiEntry;
+
+    // Esconder container de resultados
+    resultsContainer?.classList.add('hidden');
+
+    // Salvar automaticamente
+    saveNotes();
 }
 
 // ========================================

@@ -1,5 +1,5 @@
 /**
- * CedNet Help - Popup Script v1.1
+ * CedNet Help - Popup Script v1.8
  * Captura credenciais WiFi e Login Automático
  */
 
@@ -8,44 +8,61 @@ let captureBtn, resultsContainer, errorContainer, pageStatus;
 let ssidValue, passwordValue;
 let saveTxtBtn;
 let autoLoginBtn, loginStatus, loginResult;
+let deviceTypeSelect;
 
-// Credenciais padrão - Universal (CedNet + outros fabricantes)
-const DEFAULT_CREDENTIALS = [
-    // ========== CedNet (prioritárias) ==========
-    { user: 'cednet', pass: 'cednetrouter' },
-    { user: 'cednet', pass: 'GCrouter@734' },
-    { user: 'admin', pass: 'GCrouter@734' },
-    { user: 'admin', pass: 'cednetrouter' },
-    { user: 'user', pass: 'GCrouter@734' },
-    { user: 'user', pass: 'cednetrouter' },
+// Credenciais organizadas por tipo de dispositivo
+const CREDENTIALS_BY_TYPE = {
+    cednet: [
+        { user: 'cednet', pass: 'cednetrouter' },
+        { user: 'cednet', pass: 'GCrouter@734' },
+        { user: 'admin', pass: 'GCrouter@734' },
+        { user: 'admin', pass: 'cednetrouter' },
+        { user: 'user', pass: 'GCrouter@734' },
+        { user: 'user', pass: 'cednetrouter' },
+    ],
+    zte: [
+        { user: 'admin', pass: 'admin' },
+        { user: 'user', pass: 'user' },
+        { user: 'telecomadmin', pass: 'admintelecom' },
+    ],
+    ubiquiti: [
+        { user: 'ubnt', pass: 'ubnt' },
+        { user: 'admin', pass: 'ubnt' },
+        { user: 'admin', pass: 'admin' },
+    ],
+    mikrotik: [
+        { user: 'admin', pass: '' },
+        { user: 'admin', pass: 'admin' },
+    ],
+    tplink: [
+        { user: 'admin', pass: 'admin' },
+        { user: 'admin', pass: 'password' },
+        { user: 'admin', pass: '1234' },
+        { user: 'admin', pass: '' },
+    ],
+};
 
-    // ========== Ubiquiti (NanoStation, Rocket, etc.) ==========
-    { user: 'ubnt', pass: 'ubnt' },
-    { user: 'admin', pass: 'ubnt' },
+// Função para obter credenciais baseado no tipo selecionado
+function getCredentials(deviceType) {
+    if (deviceType === 'all') {
+        // Retorna todas as credenciais (sem duplicatas)
+        const allCreds = [];
+        const seen = new Set();
 
-    // ========== MikroTik ==========
-    { user: 'admin', pass: '' },
+        for (const type of Object.keys(CREDENTIALS_BY_TYPE)) {
+            for (const cred of CREDENTIALS_BY_TYPE[type]) {
+                const key = `${cred.user}|${cred.pass}`;
+                if (!seen.has(key)) {
+                    seen.add(key);
+                    allCreds.push(cred);
+                }
+            }
+        }
+        return allCreds;
+    }
 
-    // ========== TP-Link ==========
-    { user: 'admin', pass: 'admin' },
-
-    // ========== D-Link ==========
-    { user: 'admin', pass: 'password' },
-
-    // ========== Intelbras ==========
-    { user: 'admin', pass: 'admin' },
-
-    // ========== Huawei / ZTE ==========
-    { user: 'admin', pass: 'admin' },
-    { user: 'telecomadmin', pass: 'admintelecom' },
-    { user: 'user', pass: 'user' },
-
-    // ========== Genéricos ==========
-    { user: 'admin', pass: '123456' },
-    { user: 'root', pass: 'root' },
-    { user: 'root', pass: 'admin' },
-    { user: 'support', pass: 'support' },
-];
+    return CREDENTIALS_BY_TYPE[deviceType] || CREDENTIALS_BY_TYPE.cednet;
+}
 
 /**
  * Inicialização
@@ -66,6 +83,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     autoLoginBtn = document.getElementById('auto-login-btn');
     loginStatus = document.getElementById('login-status');
     loginResult = document.getElementById('login-result');
+    deviceTypeSelect = document.getElementById('device-type');
 
     // Verificar página atual
     await checkCurrentPage();
@@ -184,17 +202,22 @@ async function handleAutoLogin() {
         autoLoginBtn.querySelector('.btn-text').textContent = 'Tentando...';
         loginStatus.classList.remove('hidden');
 
+        // Obter tipo de dispositivo selecionado
+        const deviceType = deviceTypeSelect ? deviceTypeSelect.value : 'cednet';
+        const credentials = getCredentials(deviceType);
+        console.log(`[CedNet Help] Tipo: ${deviceType}, Credenciais: ${credentials.length}`);
+
         // Salvar URL inicial para comparar depois
         let initialUrl = tab.url;
         console.log('[CedNet Help] URL inicial:', initialUrl);
 
         // Tentar cada credencial
-        for (let i = 0; i < DEFAULT_CREDENTIALS.length; i++) {
-            const cred = DEFAULT_CREDENTIALS[i];
+        for (let i = 0; i < credentials.length; i++) {
+            const cred = credentials[i];
 
             // Atualizar UI
-            document.getElementById('login-attempt').textContent = 'Tentando...';
-            document.getElementById('login-count').textContent = `${i + 1}/${DEFAULT_CREDENTIALS.length}`;
+            document.getElementById('login-attempt').textContent = `${deviceType.toUpperCase()}`;
+            document.getElementById('login-count').textContent = `${i + 1}/${credentials.length}`;
             document.getElementById('login-current').textContent = `${cred.user} / ${cred.pass || '(vazio)'}`;
 
             // Executar tentativa de login

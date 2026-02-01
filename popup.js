@@ -12,56 +12,38 @@ let deviceTypeSelect;
 
 // Credenciais organizadas por tipo de dispositivo
 const CREDENTIALS_BY_TYPE = {
-    cednet: [
+    roteador: [
+        // CedNet
         { user: 'cednet', pass: 'cednetrouter' },
         { user: 'cednet', pass: 'GCrouter@734' },
         { user: 'admin', pass: 'GCrouter@734' },
         { user: 'admin', pass: 'cednetrouter' },
         { user: 'user', pass: 'GCrouter@734' },
         { user: 'user', pass: 'cednetrouter' },
-    ],
-    zte: [
+        // ZTE / Huawei / TP-Link / D-Link
         { user: 'admin', pass: 'admin' },
+        { user: 'admin', pass: '' },
+        { user: 'admin', pass: 'password' },
+        { user: 'admin', pass: '1234' },
         { user: 'user', pass: 'user' },
         { user: 'telecomadmin', pass: 'admintelecom' },
     ],
-    ubiquiti: [
+    radio: [
+        // Ubiquiti (NanoStation, Rocket, etc.)
         { user: 'ubnt', pass: 'ubnt' },
         { user: 'admin', pass: 'ubnt' },
-        { user: 'admin', pass: 'admin' },
-    ],
-    mikrotik: [
+        // MikroTik
         { user: 'admin', pass: '' },
         { user: 'admin', pass: 'admin' },
-    ],
-    tplink: [
-        { user: 'admin', pass: 'admin' },
+        // Genéricos
+        { user: 'root', pass: 'root' },
         { user: 'admin', pass: 'password' },
-        { user: 'admin', pass: '1234' },
-        { user: 'admin', pass: '' },
     ],
 };
 
 // Função para obter credenciais baseado no tipo selecionado
 function getCredentials(deviceType) {
-    if (deviceType === 'all') {
-        // Retorna todas as credenciais (sem duplicatas)
-        const allCreds = [];
-        const seen = new Set();
-
-        for (const type of Object.keys(CREDENTIALS_BY_TYPE)) {
-            for (const cred of CREDENTIALS_BY_TYPE[type]) {
-                const key = `${cred.user}|${cred.pass}`;
-                if (!seen.has(key)) {
-                    seen.add(key);
-                    allCreds.push(cred);
-                }
-            }
-        }
-        return allCreds;
-    }
-
-    return CREDENTIALS_BY_TYPE[deviceType] || CREDENTIALS_BY_TYPE.cednet;
+    return CREDENTIALS_BY_TYPE[deviceType] || CREDENTIALS_BY_TYPE.roteador;
 }
 
 /**

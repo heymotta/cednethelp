@@ -20,22 +20,17 @@ const CREDENTIALS_BY_TYPE = {
         { user: 'admin', pass: 'cednetrouter' },
         { user: 'user', pass: 'GCrouter@734' },
         { user: 'user', pass: 'cednetrouter' },
-        // ZTE / Huawei / TP-Link / D-Link
         { user: 'admin', pass: 'admin' },
         { user: 'admin', pass: '' },
         { user: 'admin', pass: 'password' },
-        { user: 'admin', pass: '1234' },
         { user: 'user', pass: 'user' },
         { user: 'telecomadmin', pass: 'admintelecom' },
     ],
     radio: [
-        // Ubiquiti (NanoStation, Rocket, etc.)
         { user: 'ubnt', pass: 'ubnt' },
         { user: 'admin', pass: 'ubnt' },
-        // MikroTik
         { user: 'admin', pass: '' },
         { user: 'admin', pass: 'admin' },
-        // Genéricos
         { user: 'root', pass: 'root' },
         { user: 'admin', pass: 'password' },
     ],
@@ -215,8 +210,15 @@ async function handleAutoLogin() {
 
             console.log(`[CedNet Help] Tentativa ${i + 1}:`, cred.user, '/', cred.pass);
 
-            // Aguardar a página carregar após clique
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            // Aguardar a página carregar após clique (3 segundos para evitar bloqueio)
+            await new Promise(resolve => setTimeout(resolve, 3000));
+
+            // A cada 2 tentativas, aguarda mais tempo para evitar bloqueio
+            if ((i + 1) % 2 === 0 && i < credentials.length - 1) {
+                document.getElementById('login-current').textContent = 'Aguardando...';
+                console.log('[CedNet Help] Pausa extra para evitar bloqueio');
+                await new Promise(resolve => setTimeout(resolve, 2000));
+            }
 
             // Verificar se a URL mudou (método mais confiável)
             try {

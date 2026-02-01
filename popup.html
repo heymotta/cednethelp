@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CedNet Help</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <span class="icon">🌐</span>
+                <h1>CedNet Help</h1>
+            </div>
+            <span class="version">v1.7</span>
+        </header>
+
+        <!-- Status da página atual -->
+        <div id="page-status" class="status-box">
+            <span class="status-icon">🔍</span>
+            <span class="status-text">Verificando página...</span>
+        </div>
+
+        <!-- Botões principais -->
+        <div class="btn-group">
+            <!-- Botão de Login Automático -->
+            <button id="auto-login-btn" class="btn-primary btn-login">
+                <span class="btn-icon">🔑</span>
+                <span class="btn-text">Login</span>
+            </button>
+
+            <!-- Botão de captura WiFi -->
+            <button id="capture-btn" class="btn-primary" disabled>
+                <span class="btn-icon">📶</span>
+                <span class="btn-text">Capturar WiFi</span>
+            </button>
+        </div>
+
+        <!-- Status do Login Automático -->
+        <div id="login-status" class="login-status hidden">
+            <div class="login-progress">
+                <span id="login-attempt">Tentando...</span>
+                <span id="login-count">0/0</span>
+            </div>
+            <div id="login-current" class="login-current"></div>
+        </div>
+
+        <!-- Resultado do Login -->
+        <div id="login-result" class="login-result hidden">
+            <h3>✅ Login Encontrado!</h3>
+            <div class="credential-item">
+                <label>Usuário</label>
+                <div class="value-box">
+                    <span id="found-user">-</span>
+                    <button class="copy-btn" data-target="found-user" title="Copiar">📋</button>
+                </div>
+            </div>
+            <div class="credential-item">
+                <label>Senha</label>
+                <div class="value-box">
+                    <span id="found-pass">-</span>
+                    <button class="copy-btn" data-target="found-pass" title="Copiar">📋</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Container de resultados WiFi -->
+        <div id="results-container" class="results hidden">
+            <h2>WiFi</h2>
+
+            <div class="credential-item">
+                <label>Nome da Rede (SSID)</label>
+                <div class="value-box">
+                    <span id="ssid-value">-</span>
+                    <button class="copy-btn" data-target="ssid-value" title="Copiar">📋</button>
+                </div>
+            </div>
+
+            <div class="credential-item">
+                <label>Senha WiFi</label>
+                <div class="value-box">
+                    <span id="password-value">-</span>
+                    <button class="copy-btn" data-target="password-value" title="Copiar">📋</button>
+                </div>
+            </div>
+
+            <!-- Botão para salvar como TXT -->
+            <button id="save-txt-btn" class="btn-secondary">
+                <span>📝</span>
+                <span>Salvar</span>
+            </button>
+        </div>
+
+        <!-- Mensagem de erro -->
+        <div id="error-container" class="error-box hidden">
+            <span class="error-icon">⚠️</span>
+            <p id="error-message">Erro desconhecido</p>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>CedNet - Suporte Técnico</p>
+        </footer>
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+
+</html>

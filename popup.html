@@ -35,20 +35,11 @@
             </select>
         </div>
 
-        <!-- Botões principais -->
-        <div class="btn-group">
-            <!-- Botão de Login Automático -->
-            <button id="auto-login-btn" class="btn-primary btn-login">
-                <span class="btn-icon">🔑</span>
-                <span class="btn-text">Login</span>
-            </button>
-
-            <!-- Botão de captura WiFi -->
-            <button id="capture-btn" class="btn-primary" disabled>
-                <span class="btn-icon">📶</span>
-                <span class="btn-text">Capturar WiFi</span>
-            </button>
-        </div>
+        <!-- Botão de Login -->
+        <button id="auto-login-btn" class="btn-primary btn-login" style="width:100%">
+            <span class="btn-icon">🔑</span>
+            <span class="btn-text">Login</span>
+        </button>
 
         <!-- Status do Login Automático -->
         <div id="login-status" class="login-status hidden">
@@ -89,15 +80,11 @@
             <textarea id="notes-area" placeholder="Digite suas anotações aqui...
 "></textarea>
 
-            <!-- Botões de ação -->
+            <!-- Botão salvar -->
             <div class="notepad-actions">
                 <button id="save-notes-btn" class="btn-secondary">
                     <span>💾</span>
                     <span>Salvar</span>
-                </button>
-                <button id="add-wifi-btn" class="btn-secondary" title="Adicionar WiFi capturado">
-                    <span>📶</span>
-                    <span>+ WiFi</span>
                 </button>
             </div>
 
@@ -105,17 +92,7 @@
             <div id="save-status" class="save-status hidden">✅ Salvo!</div>
         </div>
 
-        <!-- Container de resultados WiFi (captura) -->
-        <div id="results-container" class="results hidden">
-            <h3>📶 WiFi Capturado</h3>
-            <div class="captured-wifi">
-                <div class="wifi-info">
-                    <span id="ssid-value">-</span>
-                    <span id="password-value">-</span>
-                </div>
-                <button id="add-to-notes-btn" class="btn-small">Adicionar às notas</button>
-            </div>
-        </div>
+
 
         <!-- Mensagem de erro -->
         <div id="error-container" class="error-box hidden">

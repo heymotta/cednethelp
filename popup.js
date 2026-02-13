@@ -1,11 +1,10 @@
 /**
- * CedNet Help - Popup Script v2.0
- * Captura credenciais WiFi, Login Automático e Bloco de Notas
+ * CedNet Help - Popup Script v2.1
+ * Login Automático e Bloco de Notas
  */
 
 // Elementos do DOM
-let captureBtn, resultsContainer, errorContainer, pageStatus;
-let ssidValue, passwordValue;
+let errorContainer, pageStatus;
 let autoLoginBtn, loginStatus, loginResult;
 let deviceTypeSelect;
 
@@ -39,12 +38,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.log('[CedNet Help] Popup carregado');
 
     // Capturar referências dos elementos
-    captureBtn = document.getElementById('capture-btn');
-    resultsContainer = document.getElementById('results-container');
     errorContainer = document.getElementById('error-container');
     pageStatus = document.getElementById('page-status');
-    ssidValue = document.getElementById('ssid-value');
-    passwordValue = document.getElementById('password-value');
 
     // Elementos de login automático
     autoLoginBtn = document.getElementById('auto-login-btn');
@@ -82,10 +77,8 @@ async function checkCurrentPage() {
 
         if (isRouterPage) {
             updateStatus('success', '✅', 'Página de roteador detectada');
-            captureBtn.disabled = false;
         } else {
             updateStatus('warning', '⚠️', 'Navegue até a página do roteador');
-            captureBtn.disabled = false; // Permitir mesmo assim
         }
 
     } catch (error) {
@@ -114,8 +107,6 @@ function updateStatus(type, icon, text) {
  * Configura os event listeners
  */
 function setupEventListeners() {
-    captureBtn.addEventListener('click', handleCapture);
-
     if (autoLoginBtn) {
         autoLoginBtn.addEventListener('click', handleAutoLogin);
     }
@@ -127,8 +118,6 @@ function setupEventListeners() {
     // Event listeners do Bloco de Notas
     const saveNotesBtn = document.getElementById('save-notes-btn');
     const clearNotesBtn = document.getElementById('clear-notes-btn');
-    const addWifiBtn = document.getElementById('add-wifi-btn');
-    const addToNotesBtn = document.getElementById('add-to-notes-btn');
     const notesArea = document.getElementById('notes-area');
 
     if (saveNotesBtn) {
@@ -139,25 +128,16 @@ function setupEventListeners() {
         clearNotesBtn.addEventListener('click', clearNotes);
     }
 
-    if (addWifiBtn) {
-        addWifiBtn.addEventListener('click', handleCapture);
-    }
-
-    if (addToNotesBtn) {
-        addToNotesBtn.addEventListener('click', addCapturedWifiToNotes);
-    }
-
-    // AUTO-SAVE: Salva automaticamente quando digita (com debounce)
+    // AUTO-SAVE
     if (notesArea) {
         let saveTimeout;
         notesArea.addEventListener('input', () => {
             clearTimeout(saveTimeout);
             saveTimeout = setTimeout(() => {
-                saveNotes(true); // true = silent (sem mostrar feedback)
-            }, 500); // Salva 500ms após parar de digitar
+                saveNotes(true);
+            }, 500);
         });
 
-        // Também salva ao perder foco
         notesArea.addEventListener('blur', () => {
             saveNotes(true);
         });
@@ -295,6 +275,21 @@ async function handleAutoLogin() {
         let initialUrl = tab.url;
         console.log('[CedNet Help] URL inicial:', initialUrl);
 
+        // Desabilitar alerts/confirms do roteador para não travar
+        try {
+            await chrome.scripting.executeScript({
+                target: { tabId: tab.id },
+                func: () => {
+                    window._originalAlert = window.alert;
+                    window._originalConfirm = window.confirm;
+                    window.alert = function (msg) { console.log('[CedNet Help] Alert suprimido:', msg); };
+                    window.confirm = function (msg) { console.log('[CedNet Help] Confirm suprimido:', msg); return true; };
+                }
+            });
+        } catch (e) {
+            console.log('[CedNet Help] Não foi possível suprimir alerts');
+        }
+
         // Tentar cada credencial
         for (let i = 0; i < credentials.length; i++) {
             const cred = credentials[i];
@@ -390,7 +385,21 @@ async function handleAutoLogin() {
         handleError(`Erro: ${error.message}`);
     } finally {
         autoLoginBtn.disabled = false;
-        autoLoginBtn.querySelector('.btn-text').textContent = 'Tentar Login';
+        autoLoginBtn.querySelector('.btn-text').textContent = 'Login';
+
+        // Restaurar alerts originais
+        try {
+            const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+            if (tab && tab.id) {
+                await chrome.scripting.executeScript({
+                    target: { tabId: tab.id },
+                    func: () => {
+                        if (window._originalAlert) window.alert = window._originalAlert;
+                        if (window._originalConfirm) window.confirm = window._originalConfirm;
+                    }
+                });
+            }
+        } catch (e) { }
     }
 }
 

@@ -9,40 +9,27 @@ let ssidValue, passwordValue;
 let autoLoginBtn, loginStatus, loginResult;
 let deviceTypeSelect;
 
-// Credenciais organizadas por tipo de dispositivo
+// Credenciais organizadas por modelo de roteador
 const CREDENTIALS_BY_TYPE = {
-    roteador: [
-        // CedNet
-        { user: 'cednet', pass: 'cednetrouter' },
+    zte: [
         { user: 'cednet', pass: 'GCrouter@734' },
-        { user: 'admin', pass: 'GCrouter@734' },
-        { user: 'admin', pass: 'cednetrouter' },
-        { user: 'user', pass: 'GCrouter@734' },
-        { user: 'user', pass: 'cednetrouter' },
-        // ZTE / Huawei / TP-Link / D-Link
-        { user: 'admin', pass: 'admin' },
-        { user: 'admin', pass: '' },
-        { user: 'admin', pass: 'password' },
-        { user: 'admin', pass: '1234' },
+        { user: 'multipro', pass: 'multipro' },
         { user: 'user', pass: 'user' },
-        { user: 'telecomadmin', pass: 'admintelecom' },
     ],
-    radio: [
-        // Ubiquiti (NanoStation, Rocket, etc.)
-        { user: 'ubnt', pass: 'ubnt' },
-        { user: 'admin', pass: 'ubnt' },
-        // MikroTik
-        { user: 'admin', pass: '' },
+    datacom: [
+        { user: 'user', pass: 'user' },
+        { user: 'cednet', pass: 'GCrouter@734' },
+    ],
+    tplink: [
         { user: 'admin', pass: 'admin' },
-        // Genéricos
-        { user: 'root', pass: 'root' },
-        { user: 'admin', pass: 'password' },
+        { user: 'admin', pass: 'cednetrouter' },
+        { user: 'admin', pass: 'GCrouter@734' },
     ],
 };
 
 // Função para obter credenciais baseado no tipo selecionado
 function getCredentials(deviceType) {
-    return CREDENTIALS_BY_TYPE[deviceType] || CREDENTIALS_BY_TYPE.roteador;
+    return CREDENTIALS_BY_TYPE[deviceType] || CREDENTIALS_BY_TYPE.zte;
 }
 
 /**

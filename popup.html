@@ -13,38 +13,39 @@
         <!-- Header -->
         <header class="header">
             <div class="logo">
-                <span class="icon">🌐</span>
+                <span class="icon">⚡</span>
                 <h1>CedNet Help</h1>
             </div>
-            <span class="version">v1.7</span>
+            <span class="version">v2.1</span>
         </header>
 
         <!-- Status da página atual -->
         <div id="page-status" class="status-box">
-            <span class="status-icon">🔍</span>
-            <span class="status-text">Verificando página...</span>
+            <span class="status-icon">◉</span>
+            <span class="status-text">Scanning target...</span>
         </div>
 
         <!-- Seletor de Dispositivo -->
         <div class="device-selector">
-            <label for="device-type">Modelo do Roteador:</label>
+            <label for="device-type">target_device</label>
             <select id="device-type">
-                <option value="zte">ZTE</option>
-                <option value="datacom">Datacom</option>
-                <option value="tplink">TP-Link</option>
+                <option value="zte">» ZTE</option>
+                <option value="datacom">» Datacom</option>
+                <option value="tplink">» TP-Link</option>
+                <option value="radio">» Radio</option>
             </select>
         </div>
 
         <!-- Botão de Login -->
         <button id="auto-login-btn" class="btn-primary btn-login" style="width:100%">
-            <span class="btn-icon">🔑</span>
-            <span class="btn-text">Login</span>
+            <span class="btn-icon">⚿</span>
+            <span class="btn-text">LOGIN</span>
         </button>
 
         <!-- Status do Login Automático -->
         <div id="login-status" class="login-status hidden">
             <div class="login-progress">
-                <span id="login-attempt">Tentando...</span>
+                <span id="login-attempt">Cracking...</span>
                 <span id="login-count">0/0</span>
             </div>
             <div id="login-current" class="login-current"></div>
@@ -52,19 +53,19 @@
 
         <!-- Resultado do Login -->
         <div id="login-result" class="login-result hidden">
-            <h3>✅ Login Encontrado!</h3>
+            <h3>⚡ LOGADO COM SUCESSO ⚡</h3>
             <div class="credential-item">
-                <label>Usuário</label>
+                <label>username</label>
                 <div class="value-box">
                     <span id="found-user">-</span>
-                    <button class="copy-btn" data-target="found-user" title="Copiar">📋</button>
+                    <button class="copy-btn" data-target="found-user" title="Copiar">⎘</button>
                 </div>
             </div>
             <div class="credential-item">
-                <label>Senha</label>
+                <label>password</label>
                 <div class="value-box">
                     <span id="found-pass">-</span>
-                    <button class="copy-btn" data-target="found-pass" title="Copiar">📋</button>
+                    <button class="copy-btn" data-target="found-pass" title="Copiar">⎘</button>
                 </div>
             </div>
         </div>
@@ -72,37 +73,38 @@
         <!-- Bloco de Notas Local -->
         <div id="notepad-container" class="notepad-section">
             <div class="notepad-header">
-                <h2>📝 Anotações</h2>
-                <button id="clear-notes-btn" class="btn-icon-small" title="Limpar">🗑️</button>
+                <h2>📝 notes.txt</h2>
+                <button id="clear-notes-btn" class="btn-icon-small" title="Limpar">✕</button>
             </div>
 
             <!-- Área de texto para anotações -->
-            <textarea id="notes-area" placeholder="Digite suas anotações aqui...
+            <textarea id="notes-area" placeholder="# Digite suas anotações aqui...
+# WiFi, PPPoE, etc.
 "></textarea>
 
             <!-- Botão salvar -->
             <div class="notepad-actions">
                 <button id="save-notes-btn" class="btn-secondary">
-                    <span>💾</span>
-                    <span>Salvar</span>
+                    <span>↓</span>
+                    <span>SAVE</span>
                 </button>
             </div>
 
             <!-- Status de salvamento -->
-            <div id="save-status" class="save-status hidden">✅ Salvo!</div>
+            <div id="save-status" class="save-status hidden">✓ saved to local storage</div>
         </div>
 
 
 
         <!-- Mensagem de erro -->
         <div id="error-container" class="error-box hidden">
-            <span class="error-icon">⚠️</span>
-            <p id="error-message">Erro desconhecido</p>
+            <span class="error-icon">✖</span>
+            <p id="error-message">ERROR: unknown</p>
         </div>
 
         <!-- Footer -->
         <footer class="footer">
-            <p>CedNet - Suporte Técnico</p>
+            <p>[ CedNet // Suporte Técnico ]</p>
         </footer>
     </div>
 

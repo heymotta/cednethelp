@@ -24,6 +24,19 @@ const CREDENTIALS_BY_TYPE = {
         { user: 'admin', pass: 'cednetrouter' },
         { user: 'admin', pass: 'GCrouter@734' },
     ],
+    radio: [
+        { user: 'admin', pass: '%W2sajuB' },
+        { user: 'admin', pass: 'dITcd34A9' },
+        { user: 'admin', pass: 'DitCD34a9' },
+        { user: 'admin', pass: '%Ph8rehu' },
+        { user: 'admin', pass: 'Fcd24cli' },
+        { user: 'admin', pass: '%Ph8rehuGC' },
+        { user: 'ubnt', pass: 'ubnt' },
+        { user: 'admin', pass: '0D03BD7' },
+        { user: 'admin', pass: '5SNRAv06' },
+        { user: 'admin', pass: 'Xbd74BN2' },
+        { user: 'admin', pass: 'Erebro2h' },
+    ],
 };
 
 // Função para obter credenciais baseado no tipo selecionado
